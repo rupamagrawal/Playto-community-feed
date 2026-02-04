@@ -344,4 +344,12 @@ class AuthViewSet(viewsets.ViewSet):
     def me(self, request):
         """Return current user details"""
         serializer = UserBasicSerializer(request.user)
-        return Response(serializer.data)
+        
+        # Get CSRF token
+        from django.middleware.csrf import get_token
+        csrf_token = get_token(request)
+        
+        return Response({
+            'user': serializer.data,
+            'csrftoken': csrf_token
+        })

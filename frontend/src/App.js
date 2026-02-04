@@ -30,8 +30,14 @@ function AppContent() {
   const checkAuth = async () => {
     try {
       const response = await axios.get('/api/auth/me/');
+      const { user, csrftoken } = response.data;
       setIsAuthenticated(true);
-      setCurrentUser(response.data);
+      setCurrentUser(user);
+
+      // Restore CSRF token
+      if (csrftoken) {
+        axios.defaults.headers.common['X-CSRFToken'] = csrftoken;
+      }
     } catch (error) {
       setIsAuthenticated(false);
       setCurrentUser(null);
