@@ -40,9 +40,15 @@ function AppContent() {
     }
   };
 
-  const handleLoginSuccess = (user) => {
+  const handleLoginSuccess = (data) => {
     setIsAuthenticated(true);
-    setCurrentUser(user);
+    setCurrentUser(data.user);
+
+    // Manually set CSRF header for cross-domain requests
+    if (data.csrftoken) {
+      axios.defaults.headers.common['X-CSRFToken'] = data.csrftoken;
+    }
+
     closeLogin();
   };
 

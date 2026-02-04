@@ -297,9 +297,14 @@ class AuthViewSet(viewsets.ViewSet):
         user = serializer.validated_data['user']
         login(request, user)
         
+        # Get CSRF token
+        from django.middleware.csrf import get_token
+        csrf_token = get_token(request)
+        
         return Response({
             'user': UserBasicSerializer(user).data,
-            'message': 'Logged in successfully'
+            'message': 'Logged in successfully',
+            'csrftoken': csrf_token
         })
 
     @action(detail=False, methods=['post'])
@@ -320,9 +325,14 @@ class AuthViewSet(viewsets.ViewSet):
         
         login(request, user)  # Auto-login after registration
         
+        # Get CSRF token
+        from django.middleware.csrf import get_token
+        csrf_token = get_token(request)
+        
         return Response({
             'user': UserBasicSerializer(user).data,
-            'message': 'Registration successful'
+            'message': 'Registration successful',
+            'csrftoken': csrf_token
         }, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'])
