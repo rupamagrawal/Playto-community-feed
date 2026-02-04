@@ -118,8 +118,13 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000/',
     'http://127.0.0.1:3000/',
     'http://localhost:8000/',
+    'http://localhost:8000/',
     'http://127.0.0.1:8000/',
 ]
+
+# Add CORS origins to CSRF trusted origins
+CSRF_TRUSTED_ORIGINS.extend(config('CORS_ALLOWED_ORIGINS', default='', cast=Csv()))
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Security settings for production
