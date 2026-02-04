@@ -102,7 +102,7 @@ REST_FRAMEWORK = {
 }
 
 # CORS Settings
-CORS_ALLOW_ALL_ORIGINS = True # Enable temporarily to unblock
+CORS_ALLOW_ALL_ORIGINS = False # Reverting to strict mode
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
     default='http://localhost:3000,http://127.0.0.1:3000',
@@ -125,7 +125,9 @@ CSRF_TRUSTED_ORIGINS.extend(config('CORS_ALLOWED_ORIGINS', default='', cast=Csv(
 CORS_ALLOW_CREDENTIALS = True
 
 # Security settings for production
+# Security settings for production
 if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') # CRITICAL for Render
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
