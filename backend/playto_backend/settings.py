@@ -42,7 +42,64 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'playto_backend.urls'
 
-# ... (TEMPLATES, WSGI etc unchanged) ...
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'playto_backend.wsgi.application'
+
+# Database
+# Use dj_database_url to parse DATABASE_URL env var, fallback to local posgres
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f"postgres://{config('DB_USER', default='postgres')}:{config('DB_PASSWORD', default='postgres')}@{config('DB_HOST', default='localhost')}:{config('DB_PORT', default='5432')}/{config('DB_NAME', default='playto_community')}",
+        conn_max_age=600
+    )
+}
+
+# Custom User Model - CRITICAL: Must match migration history
+AUTH_USER_MODEL = 'community.User'
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = []
+
+# Internationalization
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+# Static files
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
 
 # CORS Settings
 CORS_ALLOW_ALL_ORIGINS = True # Enable temporarily to unblock
