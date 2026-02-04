@@ -8,6 +8,9 @@ import { KarmaProvider } from './context/KarmaContext';
 import { LoginProvider, useLogin } from './context/LoginContext';
 
 // Configure axios defaults
+if (process.env.REACT_APP_API_URL) {
+  axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+}
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 axios.defaults.withCredentials = true;
