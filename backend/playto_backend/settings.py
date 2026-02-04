@@ -1,4 +1,3 @@
-# playto_backend/settings.py
 import os
 from pathlib import Path
 from decouple import config, Csv
@@ -9,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
+# Allow all hosts in production (Render handles routing, but strict specific domains is better security-wise later)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 # Application definition
@@ -28,13 +28,9 @@ INSTALLED_APPS = [
     'community',
 ]
 
-import dj_database_url
-
-# ... (rest of imports)
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware", # Added Whitenoise
+    "whitenoise.middleware.WhiteNoiseMiddleware", # Production static files
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -44,7 +40,25 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ...
+ROOT_URLCONF = 'playto_backend.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'playto_backend.wsgi.application'
 
 # Database
 # Use dj_database_url to parse DATABASE_URL env var, fallback to local posgres
@@ -55,12 +69,25 @@ DATABASES = {
     )
 }
 
-# ...
+# Custom User Model - CRITICAL: Must match migration history
+AUTH_USER_MODEL = 'community.User'
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = []
+
+# Internationalization
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
 
 # Static files
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # REST Framework
 REST_FRAMEWORK = {
