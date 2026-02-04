@@ -1,5 +1,7 @@
 # Playto Community Feed
 
+**[🔴 LIVE DEMO](https://playtofeed.vercel.app)**
+
 A production-grade community feed system with threaded comments, likes, dynamic karma calculation, and real-time leaderboard.
 
 ## Tech Stack
