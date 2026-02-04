@@ -17,23 +17,24 @@ function Login({ onLoginSuccess }) {
     setLoading(true);
 
     try {
+      let response;
+
       if (isLogin) {
-        await axios.post('/api/auth/login/', { username, password });
+        response = await axios.post('/api/auth/login/', { username, password });
       } else {
         if (password !== confirmPassword) {
           setError("Passwords do not match!");
           setLoading(false);
           return;
         }
-        await axios.post('/api/auth/register/', {
+        response = await axios.post('/api/auth/register/', {
           username,
           password,
           password_confirm: confirmPassword
         });
       }
 
-      onLoginSuccess({ username });
-      onLoginSuccess({ username });
+      onLoginSuccess(response.data);
     } catch (err) {
       // Robust error handling for different DRF error formats
       const data = err.response?.data;
